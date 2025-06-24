@@ -68,7 +68,7 @@ export default function MintToken() {
   // };
 
   return (
-    <Card className="max-w-lg mx-auto mt-10 p-6 shadow-md">
+    <Card className="max-w-lg bg-[#4c1498] mx-auto mt-10 p-6 shadow-md border-none">
       <CardContent>
         <h1 className="text-xl font-semibold mb-2">Mint Tokens</h1>
         <hr />

@@ -179,7 +179,7 @@ export default function TokenSelector({
               leaveFrom="opacity-100 translate-y-0"
               leaveTo="opacity-0 translate-y-4"
             >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-xl bg-[#1a1a1a] p-6 text-white shadow-xl transition-all max-h-2/3 overflow-y-auto">
+              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-xl bg-[#bf90fe] p-6 text-white shadow-xl transition-all max-h-2/3 overflow-y-auto">
                 <Dialog.Title className="text-lg font-medium mb-4">
                   Select a token
                 </Dialog.Title>
@@ -192,7 +192,7 @@ export default function TokenSelector({
                         setSelectedToken(token);
                         closeModal();
                       }}
-                      className="w-full text-left text-white px-4 py-2 rounded hover:bg-gray-800 cursor-pointer rounded-lg"
+                      className="w-full text-left text-white px-4 py-2 rounded hover:bg-[#4c3965] cursor-pointer rounded-lg"
                     >
                       {token.chain} — {token.token}
                     </button>

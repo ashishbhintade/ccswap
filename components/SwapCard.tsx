@@ -38,7 +38,7 @@ export default function SwapCard() {
     !account || !amount.trim() || fromToken.selector === toToken.selector;
 
   return (
-    <Card className="w-full max-w-lg bg-[#1f1f1f] text-white rounded-2xl shadow-xl">
+    <Card className="w-full max-w-lg bg-[#4c1498] text-white rounded-2xl shadow-xl border-none">
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle className="text-lg font-semibold">Swap</CardTitle>
@@ -51,7 +51,7 @@ export default function SwapCard() {
           <label className="text-sm text-muted-foreground px-2">
             Tranfer from {fromToken.chain} / {fromToken.token}
           </label>
-          <div className="bg-[#2a2a2a] rounded-xl p-3 mt-2 grid grid-cols-2">
+          <div className="bg-[#6f42ac] rounded-xl p-3 mt-2 grid grid-cols-2">
             <Input
               placeholder="0.0"
               value={amount}
@@ -69,7 +69,7 @@ export default function SwapCard() {
 
         {/* To */}
         <div className="space-y-1">
-          <label className="text-sm text-muted-foreground px-2">
+          <label className="text-sm text-[#fdfcfe] px-2">
             Tranfer to {toToken.chain} / {toToken.token}
           </label>
           <div className="rounded-xl mt-2 grid grid-cols-2 py-3">
@@ -90,7 +90,7 @@ export default function SwapCard() {
         <Button
           onClick={handleSwap}
           disabled={isSwapDisabled}
-          className="w-full text-black font-semibold rounded-xl"
+          className="w-full text-white font-semibold rounded-xl"
         >
           Swap
         </Button>
