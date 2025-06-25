@@ -1,10 +1,11 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import {
   createWalletClient,
+  createPublicClient,
   custom,
+  http,
   type WalletClient,
+  type PublicClient,
   type Address,
 } from "viem";
 import { sepolia } from "viem/chains";
@@ -12,6 +13,7 @@ import { sepolia } from "viem/chains";
 export function useWalletConnection() {
   const [account, setAccount] = useState<Address | undefined>();
   const [client, setClient] = useState<WalletClient | undefined>();
+  const [publicClient, setPublicClient] = useState<PublicClient | undefined>();
 
   const isConnected = Boolean(account && client);
 
@@ -31,6 +33,13 @@ export function useWalletConnection() {
               transport: custom(ethereum),
             });
             setClient(walletClient);
+
+            const publicClient = createPublicClient({
+              chain: sepolia,
+              transport: http(), // public RPC
+            });
+            setPublicClient(publicClient);
+
             localStorage.setItem("walletAccount", saved);
           }
         } else {
@@ -43,18 +52,26 @@ export function useWalletConnection() {
 
     checkConnection();
 
-    // Listen for account changes or disconnection
     const handleAccountsChanged = (accounts: string[]) => {
       if (accounts.length === 0) {
         disconnectWallet();
       } else {
-        setAccount(accounts[0] as Address);
+        const account = accounts[0] as Address;
+        setAccount(account);
+
         const walletClient = createWalletClient({
           chain: sepolia,
           transport: custom(ethereum),
         });
         setClient(walletClient);
-        localStorage.setItem("walletAccount", accounts[0]);
+
+        const publicClient = createPublicClient({
+          chain: sepolia,
+          transport: http(),
+        });
+        setPublicClient(publicClient);
+
+        localStorage.setItem("walletAccount", account);
       }
     };
 
@@ -78,16 +95,21 @@ export function useWalletConnection() {
       });
 
       const connectedAccount = accounts[0] as Address;
+
       const walletClient = createWalletClient({
         chain: sepolia,
         transport: custom(ethereum),
       });
+      const publicClient = createPublicClient({
+        chain: sepolia,
+        transport: http(),
+      });
 
       setAccount(connectedAccount);
       setClient(walletClient);
-      localStorage.setItem("walletAccount", connectedAccount);
+      setPublicClient(publicClient);
 
-      // Network switch logic removed
+      localStorage.setItem("walletAccount", connectedAccount);
     } catch (err) {
       console.error("Wallet connection failed:", err);
       disconnectWallet();
@@ -97,12 +119,14 @@ export function useWalletConnection() {
   const disconnectWallet = () => {
     setAccount(undefined);
     setClient(undefined);
+    setPublicClient(undefined);
     localStorage.removeItem("walletAccount");
   };
 
   return {
     account,
     client,
+    publicClient,
     isConnected,
     connectWallet,
     disconnectWallet,

@@ -20,6 +20,7 @@ const defaultToken = {
   token: "Hedera",
   tokenAddress: "0xc5aaba5a2bf9bafe78402728da518b8b629f3808",
   selector: "0x530b9AeBF59481e459Cf6a0c7269042843a6FCb2",
+  chainSelector: "16015286601757825753",
 };
 
 const chainMap = {
@@ -31,7 +32,7 @@ const chainMap = {
 
 export default function MintToken() {
   const [token, setToken] = useState(defaultToken);
-  const { account, client } = useWalletConnection();
+  const { account, client, publicClient } = useWalletConnection();
 
   const selectedNetwork = token.chain as keyof typeof chainMap;
   const selectedChain: Chain = chainMap[selectedNetwork];
@@ -54,6 +55,23 @@ export default function MintToken() {
         chain: selectedChain,
         args: [account],
       });
+
+      // const balance = await publicClient?.readContract({
+      //   address: token.tokenAddress as Address,
+      //   abi: contractAbi,
+      //   functionName: "balanceOf",
+      //   args: [account],
+      // });
+
+      await client.writeContract({
+        account,
+        address: token.tokenAddress as Address,
+        abi: contractAbi,
+        functionName: "approve",
+        chain: selectedChain,
+        args: [token.selector as Address, BigInt(100000000000000000000)],
+      });
+
       //   console.log("Policy expired successfully.");
     } catch (err) {
       console.error("Error occured during minting tokens:", err);

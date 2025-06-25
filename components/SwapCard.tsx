@@ -6,32 +6,80 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import TokenSelector from "@/components/TokenSelector";
 import { useWalletConnection } from "@/hooks/useWalletConnection";
+import {
+  sepolia,
+  baseSepolia,
+  arbitrumSepolia,
+  optimismSepolia,
+} from "viem/chains";
+import type { Address, Chain } from "viem";
+import CCSwapJson from "@/abis/CCSwap.json";
+import { parseEther } from "viem";
 
 const defaultFromToken = {
   chain: "ETH",
   token: "Hedera",
   tokenAddress: "0xc5aaba5a2bf9bafe78402728da518b8b629f3808",
   selector: "0x530b9AeBF59481e459Cf6a0c7269042843a6FCb2",
+  chainSelector: "16015286601757825753",
 };
 const defaultToToken = {
   chain: "ARB",
   token: "Hedera",
   tokenAddress: "0x71893b2ece4826fe54cab810d78c9f501d60e149",
   selector: "0xa67D4C6E8ffF498a57F400A95701ED7Ee0c161A9",
+  chainSelector: "3478487238524512106",
 };
 
+const chainMap = {
+  ETH: sepolia,
+  Base: baseSepolia,
+  ARB: arbitrumSepolia,
+  Optimism: optimismSepolia,
+} as const;
+
 export default function SwapCard() {
-  const { account } = useWalletConnection();
+  const { account, client } = useWalletConnection();
 
   const [fromToken, setFromToken] = useState(defaultFromToken);
   const [toToken, setToToken] = useState(defaultToToken);
   const [amount, setAmount] = useState("");
 
-  const handleSwap = () => {
-    console.log("Swapping:");
-    console.log("From Token:", fromToken);
-    console.log("To Token:", toToken);
-    console.log("Amount:", amount);
+  const selectedSourceNetwork = fromToken.chain as keyof typeof chainMap;
+  const selectedSourceChain: Chain = chainMap[selectedSourceNetwork];
+
+  const contractAbi = CCSwapJson.abi;
+
+  // const handleSwap = () => {
+  //   console.log("Amount : ", amount);
+  // };
+
+  const handleSwap = async () => {
+    try {
+      if (!client) {
+        throw new Error("Wallet client could not be created");
+      }
+      if (!account) {
+        throw new Error("Wallet client could not be created");
+      }
+      await client.writeContract({
+        account: account,
+        address: fromToken.selector as Address,
+        abi: contractAbi,
+        functionName: "swap",
+        chain: selectedSourceChain,
+        args: [
+          BigInt(toToken.chainSelector),
+          parseEther(amount),
+          fromToken.tokenAddress,
+          toToken.tokenAddress,
+          BigInt(300000),
+        ],
+      });
+      //   console.log("Policy expired successfully.");
+    } catch (err) {
+      console.error("Error occured during swaping tokens:", err);
+    }
   };
 
   const isSwapDisabled =
@@ -48,7 +96,7 @@ export default function SwapCard() {
       <CardContent className="space-y-6">
         {/* From */}
         <div>
-          <label className="text-sm text-muted-foreground px-2">
+          <label className="text-sm text-white px-2">
             Tranfer from {fromToken.chain} / {fromToken.token}
           </label>
           <div className="bg-[#6f42ac] rounded-xl p-3 mt-2 grid grid-cols-2">
@@ -90,7 +138,7 @@ export default function SwapCard() {
         <Button
           onClick={handleSwap}
           disabled={isSwapDisabled}
-          className="w-full text-white font-semibold rounded-xl"
+          className="w-full text-white font-semibold rounded-xl cursor-pointer"
         >
           Swap
         </Button>
