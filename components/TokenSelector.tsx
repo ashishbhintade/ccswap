@@ -4,6 +4,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 
 const tokens = [
+  //Ethereum
   {
     chain: "ETH",
     token: "Hedera",
@@ -39,7 +40,7 @@ const tokens = [
     selector: "0x530b9AeBF59481e459Cf6a0c7269042843a6FCb2",
     chainSelector: "16015286601757825753",
   },
-
+  //Arbitrum
   {
     chain: "ARB",
     token: "Hedera",
@@ -56,15 +57,8 @@ const tokens = [
   },
   {
     chain: "ARB",
-    token: "Uniswap",
-    tokenAddress: "0xf49ca83bfdce9f30ba12178d1bfa48297d94330b",
-    selector: "0xa67D4C6E8ffF498a57F400A95701ED7Ee0c161A9",
-    chainSelector: "3478487238524512106",
-  },
-  {
-    chain: "ARB",
-    token: "USDC",
-    tokenAddress: "0xe2a90166b8d80d57f8d6e5f875af95308b00c68e",
+    token: "Aave",
+    tokenAddress: "0x85Dd42Ea8276AA21544f3f634ef84CcF5161fFCe",
     selector: "0xa67D4C6E8ffF498a57F400A95701ED7Ee0c161A9",
     chainSelector: "3478487238524512106",
   },
@@ -75,7 +69,7 @@ const tokens = [
     selector: "0xa67D4C6E8ffF498a57F400A95701ED7Ee0c161A9",
     chainSelector: "3478487238524512106",
   },
-
+  //Base
   {
     chain: "Base",
     token: "Hedera",
@@ -92,44 +86,16 @@ const tokens = [
   },
   {
     chain: "Base",
-    token: "Uniswap",
-    tokenAddress: "0xc6d422e6a10ae87d3860776776f3ece23e7494ff",
+    token: "Aave",
+    tokenAddress: "0x3B9E8Aa5F6cF87038a098071b16645385FBDE21D",
     selector: "0x1Ef00bE0a03f862f980Ac8789A37031c69fB2417",
     chainSelector: "10344971235874465080",
   },
-  {
-    chain: "Base",
-    token: "USDC",
-    tokenAddress: "0xf05659ef76a72c75e111a5ca9c2efe43e5f5b685",
-    selector: "0x1Ef00bE0a03f862f980Ac8789A37031c69fB2417",
-    chainSelector: "10344971235874465080",
-  },
-  {
-    chain: "Base",
-    token: "Near",
-    tokenAddress: "0x99fd15aa0bd8273253eb5b6a7835d109bc1afaac",
-    selector: "0x1Ef00bE0a03f862f980Ac8789A37031c69fB2417",
-    chainSelector: "10344971235874465080",
-  },
-
-  {
-    chain: "Optimism",
-    token: "Hedera",
-    tokenAddress: "0xe4b3a31823b703809cf9db163a20bd706099c846",
-    selector: "0xfeCaAc337c404D39944C64B6A174bDadD1269F63",
-    chainSelector: "5224473277236331295",
-  },
+  //Optimism
   {
     chain: "Optimism",
     token: "Aptos",
     tokenAddress: "0x369841a81df5174891e7c3663e6d228d65b4fea6",
-    selector: "0xfeCaAc337c404D39944C64B6A174bDadD1269F63",
-    chainSelector: "5224473277236331295",
-  },
-  {
-    chain: "Optimism",
-    token: "Uniswap",
-    tokenAddress: "0xca43b352f6db42e7cb1d588b7e06c9de1e87b14b",
     selector: "0xfeCaAc337c404D39944C64B6A174bDadD1269F63",
     chainSelector: "5224473277236331295",
   },
@@ -142,8 +108,8 @@ const tokens = [
   },
   {
     chain: "Optimism",
-    token: "Near",
-    tokenAddress: "0x8de497ab5eb1069e3b4777207d9ad45ebde4a86d",
+    token: "Aave",
+    tokenAddress: "0x8ad0D9ff78C7aA5458AE539f5428aD6C23fC2bC0",
     selector: "0xfeCaAc337c404D39944C64B6A174bDadD1269F63",
     chainSelector: "5224473277236331295",
   },
@@ -172,7 +138,7 @@ export default function TokenSelector({
         onClick={openModal}
         className="text-sm text-white bg-transparent font-semibold px-4 py-2 cursor-pointer border rounded-2xl"
       >
-        {selectedToken.chain} / {selectedToken.token}
+        {selectedToken.chain} - {selectedToken.token}
       </button>
 
       <Transition appear show={isOpen} as={Fragment}>

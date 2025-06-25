@@ -50,10 +50,6 @@ export default function SwapCard() {
 
   const contractAbi = CCSwapJson.abi;
 
-  // const handleSwap = () => {
-  //   console.log("Amount : ", amount);
-  // };
-
   const handleSwap = async () => {
     try {
       if (!client) {
@@ -97,7 +93,7 @@ export default function SwapCard() {
         {/* From */}
         <div>
           <label className="text-sm text-white px-2">
-            Tranfer from {fromToken.chain} / {fromToken.token}
+            Tranfer from {fromToken.chain} - {fromToken.token}
           </label>
           <div className="bg-[#6f42ac] rounded-xl p-3 mt-2 grid grid-cols-2">
             <Input
@@ -118,7 +114,7 @@ export default function SwapCard() {
         {/* To */}
         <div className="space-y-1">
           <label className="text-sm text-[#fdfcfe] px-2">
-            Tranfer to {toToken.chain} / {toToken.token}
+            Tranfer to {toToken.chain} - {toToken.token}
           </label>
           <div className="rounded-xl mt-2 grid grid-cols-2 py-3">
             <Input

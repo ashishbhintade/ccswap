@@ -56,13 +56,6 @@ export default function MintToken() {
         args: [account],
       });
 
-      // const balance = await publicClient?.readContract({
-      //   address: token.tokenAddress as Address,
-      //   abi: contractAbi,
-      //   functionName: "balanceOf",
-      //   args: [account],
-      // });
-
       await client.writeContract({
         account,
         address: token.tokenAddress as Address,
@@ -78,17 +71,10 @@ export default function MintToken() {
     }
   };
 
-  // const handleSubmit = () => {
-  //   console.log("Account : ", account);
-  //   console.log("Token Address : ", token.tokenAddress);
-  //   console.log("Selected Chain : ", selectedChain);
-  //   console.log("To : ", account);
-  // };
-
   return (
     <Card className="max-w-lg bg-[#4c1498] mx-auto mt-10 p-6 shadow-md border-none">
       <CardContent>
-        <h1 className="text-xl font-semibold mb-2">Mint Tokens</h1>
+        <h1 className="text-xl font-semibold mb-2">Mint & Approve Tokens</h1>
         <hr />
 
         <div className="flex flex-col items-center">
@@ -100,7 +86,7 @@ export default function MintToken() {
           </div>
 
           <Button onClick={handleSubmit} className="w-2/3 mt-4 cursor-pointer">
-            Mint
+            Mint & Approve
           </Button>
         </div>
       </CardContent>
