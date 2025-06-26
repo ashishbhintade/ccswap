@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ConnectWallet from "./ConnectWallet";
+import ChainSwitcher from "./SwitchChain";
 import { useWalletConnection } from "@/hooks/useWalletConnection";
 
 export default function Header() {
@@ -46,7 +47,10 @@ export default function Header() {
       </div>
 
       {/* Right: Connect Wallet */}
-      <div>
+      <div className="flex">
+        <div className="mr-5">
+          <ChainSwitcher />
+        </div>
         <ConnectWallet />
       </div>
     </div>

@@ -136,7 +136,7 @@ export default function TokenSelector({
     <>
       <button
         onClick={openModal}
-        className="text-sm text-white bg-transparent font-semibold px-4 py-2 cursor-pointer border rounded-2xl"
+        className="text-sm text-white bg-transparent font-semibold px-4 py-2 cursor-pointer border rounded-2xl flex items-center"
       >
         {selectedToken.chain} - {selectedToken.token}
       </button>
