@@ -120,3 +120,22 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* globals.css */
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: inherit;
+  margin-block: 6px; /* adds space at top and bottom of track */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #5f487f;
+  border-radius: 20px;
+  border: 2px solid transparent; /* creates "padding" */
+  background-clip: padding-box;
+}
