@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -45,6 +45,9 @@ export default function SwapCard() {
   const [toToken, setToToken] = useState(defaultToToken);
   const [amount, setAmount] = useState("");
 
+  const [simulationResult, setSimulationResult] = useState<any>(null);
+  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+
   const selectedSourceNetwork = fromToken.chain as keyof typeof chainMap;
   const selectedSourceChain: Chain = chainMap[selectedSourceNetwork];
 
@@ -77,6 +80,38 @@ export default function SwapCard() {
       console.error("Error occured during swaping tokens:", err);
     }
   };
+
+  useEffect(() => {
+    if (!amount || isNaN(Number(amount))) return;
+
+    if (debounceTimer.current) clearTimeout(debounceTimer.current);
+
+    debounceTimer.current = setTimeout(async () => {
+      try {
+        const query = new URLSearchParams({
+          originChainSelector: fromToken.chainSelector,
+          destinationChainSelector: toToken.chainSelector,
+          amount,
+          token0: fromToken.tokenAddress,
+          token1: toToken.tokenAddress,
+        }).toString();
+
+        const res = await fetch(`/api/simulate?${query}`);
+        if (!res.ok) throw new Error("Simulation fetch failed");
+
+        const data = await res.json();
+        console.log(data);
+        setSimulationResult(data);
+      } catch (err) {
+        console.error("Simulation API error:", err);
+        setSimulationResult(null);
+      }
+    }, 500);
+
+    return () => {
+      if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    };
+  }, [fromToken.tokenAddress, toToken.tokenAddress, amount]);
 
   const isSwapDisabled =
     !account || !amount.trim() || fromToken.selector === toToken.selector;
@@ -118,7 +153,7 @@ export default function SwapCard() {
           </label>
           <div className="rounded-xl mt-2 grid grid-cols-2 py-3">
             <Input
-              placeholder="Select Destination Chain"
+              placeholder={simulationResult && amount ? simulationResult : "0"}
               className="bg-transparent border-none text-2xl font-semibold text-white w-full focus-visible:ring-0"
               disabled
             />
