@@ -106,7 +106,7 @@ export default function SwapCard() {
         console.error("Simulation API error:", err);
         setSimulationResult(null);
       }
-    }, 500);
+    }, 400);
 
     return () => {
       if (debounceTimer.current) clearTimeout(debounceTimer.current);
@@ -153,7 +153,14 @@ export default function SwapCard() {
           </label>
           <div className="rounded-xl mt-2 grid grid-cols-2 py-3">
             <Input
-              placeholder={simulationResult && amount ? simulationResult : "0"}
+              placeholder={
+                !simulationResult ||
+                !amount ||
+                amount === "0." ||
+                amount === "0"
+                  ? "0"
+                  : simulationResult
+              }
               className="bg-transparent border-none text-2xl font-semibold text-white w-full focus-visible:ring-0"
               disabled
             />
