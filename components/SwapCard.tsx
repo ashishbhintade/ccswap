@@ -82,7 +82,8 @@ export default function SwapCard() {
   };
 
   useEffect(() => {
-    if (!amount || isNaN(Number(amount))) return;
+    const parsedAmount = parseFloat(amount);
+    if (!amount || isNaN(parsedAmount) || parsedAmount <= 0) return;
 
     if (debounceTimer.current) clearTimeout(debounceTimer.current);
 
@@ -100,7 +101,6 @@ export default function SwapCard() {
         if (!res.ok) throw new Error("Simulation fetch failed");
 
         const data = await res.json();
-        console.log(data);
         setSimulationResult(data);
       } catch (err) {
         console.error("Simulation API error:", err);
