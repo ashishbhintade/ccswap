@@ -25,23 +25,16 @@ export function useWalletConnection() {
       try {
         const accounts = await ethereum.request({ method: "eth_accounts" });
         if (accounts.length > 0) {
-          const saved = accounts[0];
-          if (saved.startsWith("0x") && saved.length === 42) {
-            setAccount(saved as Address);
-            const walletClient = createWalletClient({
-              chain: sepolia,
-              transport: custom(ethereum),
-            });
-            setClient(walletClient);
-
-            const publicClient = createPublicClient({
-              chain: sepolia,
-              transport: http(), // public RPC
-            });
-            setPublicClient(publicClient);
-
-            localStorage.setItem("walletAccount", saved);
-          }
+          await switchToSepolia(ethereum); // Ensure Sepolia is selected/added
+          const saved = accounts[0] as Address;
+          setAccount(saved);
+          setClient(
+            createWalletClient({ chain: sepolia, transport: custom(ethereum) })
+          );
+          setPublicClient(
+            createPublicClient({ chain: sepolia, transport: http() })
+          );
+          localStorage.setItem("walletAccount", saved);
         } else {
           disconnectWallet();
         }
@@ -52,25 +45,19 @@ export function useWalletConnection() {
 
     checkConnection();
 
-    const handleAccountsChanged = (accounts: string[]) => {
+    const handleAccountsChanged = async (accounts: string[]) => {
       if (accounts.length === 0) {
         disconnectWallet();
       } else {
+        await switchToSepolia(ethereum);
         const account = accounts[0] as Address;
         setAccount(account);
-
-        const walletClient = createWalletClient({
-          chain: sepolia,
-          transport: custom(ethereum),
-        });
-        setClient(walletClient);
-
-        const publicClient = createPublicClient({
-          chain: sepolia,
-          transport: http(),
-        });
-        setPublicClient(publicClient);
-
+        setClient(
+          createWalletClient({ chain: sepolia, transport: custom(ethereum) })
+        );
+        setPublicClient(
+          createPublicClient({ chain: sepolia, transport: http() })
+        );
         localStorage.setItem("walletAccount", account);
       }
     };
@@ -93,8 +80,10 @@ export function useWalletConnection() {
       const accounts = await ethereum.request({
         method: "eth_requestAccounts",
       });
-
       const connectedAccount = accounts[0] as Address;
+
+      // ✅ Switch to Sepolia only after connection
+      await switchToSepolia(ethereum);
 
       const walletClient = createWalletClient({
         chain: sepolia,
@@ -108,10 +97,15 @@ export function useWalletConnection() {
       setAccount(connectedAccount);
       setClient(walletClient);
       setPublicClient(publicClient);
-
       localStorage.setItem("walletAccount", connectedAccount);
-    } catch (err) {
-      console.error("Wallet connection failed:", err);
+    } catch (err: any) {
+      if (err.code === -32002) {
+        alert(
+          "MetaMask request is already pending. Please open MetaMask and finish it."
+        );
+      } else {
+        console.error("Wallet connection failed:", err);
+      }
       disconnectWallet();
     }
   };
@@ -121,6 +115,41 @@ export function useWalletConnection() {
     setClient(undefined);
     setPublicClient(undefined);
     localStorage.removeItem("walletAccount");
+  };
+
+  // Add or switch to Sepolia chain in MetaMask
+  const switchToSepolia = async (ethereum: any) => {
+    try {
+      await ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: "0xaa36a7" }], // Sepolia chain ID in hex
+      });
+    } catch (switchError: any) {
+      if (switchError.code === 4902) {
+        try {
+          await ethereum.request({
+            method: "wallet_addEthereumChain",
+            params: [
+              {
+                chainId: "0xaa36a7",
+                chainName: "Sepolia",
+                nativeCurrency: {
+                  name: "Sepolia ETH",
+                  symbol: "ETH",
+                  decimals: 18,
+                },
+                rpcUrls: ["https://rpc.sepolia.org"],
+                blockExplorerUrls: ["https://sepolia.etherscan.io"],
+              },
+            ],
+          });
+        } catch (addError) {
+          console.error("Failed to add Sepolia network:", addError);
+        }
+      } else {
+        console.error("Failed to switch to Sepolia network:", switchError);
+      }
+    }
   };
 
   return {
