@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -42,7 +43,7 @@ export default function ChainSwitcher() {
 
     try {
       // Try switching the chain
-      await client?.switchChain({ id: chain.id });
+      await client.switchChain({ id: chain.id });
     } catch (error: any) {
       if (
         error.code === 4902 ||
@@ -78,9 +79,11 @@ export default function ChainSwitcher() {
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="border-primary bg-transparent cursor-pointer"
+          className="border-primary bg-transparent cursor-pointer hover:bg-[#6f42ac]"
+          disabled={!client}
         >
           {selectedChain} Sepolia
+          <ChevronDown size={16} />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="bg-[#bf90fe] border-none">
